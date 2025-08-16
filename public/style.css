@@ -1,76 +1,49 @@
-html, body {
-    height: 100%;
+body {
     margin: 0;
     padding: 0;
     font-family: 'Arial', sans-serif;
+    background: black;
     color: #00fff0;
     text-align: center;
-    background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
-    background-size: 600% 600%;
-    animation: gradientBG 20s ease infinite;
-    overflow-x: hidden;
-}
-
-@keyframes gradientBG {
-    0% {background-position:0% 50%;}
-    50% {background-position:100% 50%;}
-    100% {background-position:0% 50%;}
 }
 
 h1 {
-    font-size: 3rem;
+    font-size: 3em;
     margin: 20px 0;
-    text-shadow: 0 0 10px #00fff0, 0 0 20px #00fff0, 0 0 30px #00fff0;
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px #00fff0;
 }
 
-form {
-    background: rgba(0,0,0,0.7);
+input[type="file"] {
+    margin: 20px 0;
+}
+
+.photo-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
     padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    display: inline-block;
 }
 
-input[type="file"],
-button,
-input[type="text"] {
-    background: #00fff0;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    color: #000;
-    cursor: pointer;
-    margin: 5px 0;
-}
-
-input[type="file"]:hover,
-button:hover,
-input[type="text"]:hover {
-    background: #00d6c5;
-}
-
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin-top: 20px;
-    padding: 0 20px;
-}
-
-.gallery-item {
+.photo-box {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.gallery-item img {
-    width: 100%;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+.photo-box img {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
 }
 
-.photoName {
+button {
     margin-top: 5px;
-    font-size: 0.9rem;
-    text-shadow: 0 0 5px #00fff0;
+    padding: 5px 10px;
+    background-color: #00fff0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
