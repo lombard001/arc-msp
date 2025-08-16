@@ -6,9 +6,7 @@ const app = express();
 
 // Upload klasörü
 const uploadFolder = 'public/uploads';
-if (!fs.existsSync(uploadFolder)){
-    fs.mkdirSync(uploadFolder, { recursive: true });
-}
+if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder, { recursive: true });
 
 // Multer setup
 const storage = multer.diskStorage({
@@ -65,10 +63,12 @@ app.get(['/','/home'], (req, res) => {
     let files = [];
     try { files = fs.readdirSync(uploadFolder); } catch (err) {}
     let html = `
+    <!DOCTYPE html>
     <html>
     <head>
-      <link rel="stylesheet" href="/style.css">
+      <meta charset="UTF-8">
       <title>MSP2 Varlık Yönetici</title>
+      <link rel="stylesheet" href="/style.css">
     </head>
     <body>
       <h1>MSP2 Varlık Yönetici</h1>
