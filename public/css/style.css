@@ -41,6 +41,7 @@ body {
   border-radius: 12px;
   box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer; /* Tıklanabilir göster */
 }
 
 .photo-container img:hover {
@@ -94,17 +95,16 @@ button:hover {
   background: rgba(0,0,0,0.9);
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
-/* Büyük fotoğraf */
 .lightbox img {
   max-width: 90%;
   max-height: 90%;
   border-radius: 12px;
-  box-shadow: 0 0 30px rgba(0,255,255,0.8);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
 }
 
-/* Kapatma butonu */
 .lightbox .close {
   position: absolute;
   top: 20px;
@@ -112,4 +112,11 @@ button:hover {
   font-size: 2em;
   color: #fff;
   cursor: pointer;
+  font-weight: bold;
+}
+
+.lightbox p {
+  margin-top: 10px;
+  color: #0ff;
+  font-size: 1em;
 }
