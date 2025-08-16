@@ -5,17 +5,33 @@ body {
     background: black;
     color: #00fff0;
     text-align: center;
+    overflow-x: hidden;
 }
 
-h1 {
-    font-size: 3em;
-    margin: 20px 0;
-    letter-spacing: 3px;
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    border-bottom: 1px solid #00fff0;
+}
+
+.site-name {
+    font-size: 1.5em;
+    font-weight: bold;
     text-shadow: 0 0 10px #00fff0;
 }
 
-input[type="file"] {
-    margin: 20px 0;
+.page-title {
+    font-size: 2em;
+    font-weight: bold;
+    text-shadow: 0 0 15px #00fff0;
+}
+
+input[type="file"], input[type="text"], button {
+    margin: 10px 5px;
+    padding: 5px 10px;
+    font-size: 1em;
 }
 
 .photo-container {
