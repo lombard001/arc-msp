@@ -1,82 +1,85 @@
-html, body {
+/* Genel stil */
+body {
   margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background: radial-gradient(circle at center, #000a1b 1%, #000000 70%);
-  font-family: Arial, sans-serif;
+  background: #000;
+  color: #fff;
+  font-family: "Segoe UI", Arial, sans-serif;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Yatay ortalama */
+}
+
+/* Başlık */
+.title {
+  font-size: 2.8em;
+  margin: 40px 0 20px 0; /* Üstten boşluk bırak */
+  text-align: center;
+  text-shadow: 0 0 15px #0ff, 0 0 25px #0ff;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+/* Galeri */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  padding: 20px;
+}
+
+.photo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.photo-container img {
+  max-width: 180px;
+  max-height: 180px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.photo-container img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+}
+
+.photo-container p {
+  margin: 8px 0 0 0;
+  font-size: 0.9em;
+  color: #ccc;
+  text-align: center;
+}
+
+/* Admin panel form */
+form {
+  margin: 30px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+input[type="file"] {
   color: #fff;
 }
 
-canvas {
-  display: block;
-}
-
-.overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 30, 0.6);
-  border: 1px solid rgba(150, 150, 255, 0.4);
-  border-radius: 12px;
-  padding: 20px 30px;
-  box-shadow: 0 0 20px rgba(180, 200, 255, 0.3);
-  color: #9abfff;
-  text-align: center;
-  backdrop-filter: blur(6px);
-  opacity: 0;
-  animation: appear 1.4s ease-out forwards;
-  width: 90%;
-  max-width: 400px;
-}
-
-.overlay h1 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  background: linear-gradient(to right, #9abfff, #6effb2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.subtext {
-  margin-top: 12px;
-  font-size: 14px;
-  color: #c0d7ff;
-}
-
-.bookmark-btn,
-.discord-btn {
-  display: block;
-  width: 87.5%;
-  margin-top: 15px;
-  padding: 10px 25px;
-  font-size: 15px;
-  background: linear-gradient(to right, #6e9aff, #4db89e);
-  color: white;
+button {
+  padding: 10px 20px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #0ff, #09f);
+  color: #000;
+  font-weight: bold;
   cursor: pointer;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.bookmark-btn:hover,
-.discord-btn:hover {
-  background: linear-gradient(to right, #4db89e, #6e9aff);
+button:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(0, 139, 255, 0.6);
-}
-
-@keyframes appear {
-  0% {
-    transform: translate(-50%, -50%) scale(0.6);
-    opacity: 0;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
+  background: linear-gradient(90deg, #09f, #0ff);
 }
