@@ -1,16 +1,25 @@
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #ff6ec7, #ff9a8b);
-    color: #fff;
     margin: 0;
     padding: 0;
     text-align: center;
+    color: #fff;
+    background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
+    background-size: 600% 600%;
+    animation: gradientBG 20s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    text-shadow: 0 0 10px #00fff0, 0 0 20px #00fff0, 0 0 30px #00fff0;
+    color: #00fff0;
 }
 
 form {
@@ -21,19 +30,21 @@ form {
 }
 
 input[type="file"],
-button {
-    background: #ff6ec7;
+button,
+input[type="text"] {
+    background: #00fff0;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
-    color: #fff;
+    color: #000;
     cursor: pointer;
     margin: 5px 0;
 }
 
 input[type="file"]:hover,
-button:hover {
-    background: #ff9a8b;
+button:hover,
+input[type="text"]:hover {
+    background: #00d6c5;
 }
 
 .gallery {
@@ -44,26 +55,21 @@ button:hover {
     padding: 0 20px;
 }
 
-.gallery img {
-    width: 100%;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-}
-
-.photoItem {
-    position: relative;
+.gallery-item {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.photoItem input {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    display: none;
+.gallery-item img {
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
-.photoItem:hover input {
-    display: block;
+.photoName {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #00fff0;
+    text-shadow: 0 0 5px #00fff0;
 }
