@@ -1,7 +1,7 @@
 /* Genel stil */
 body {
   margin: 0;
-  background: #000;
+  background: radial-gradient(circle at center, #000a1b 1%, #000000 70%);
   color: #fff;
   font-family: "Segoe UI", Arial, sans-serif;
   overflow-x: hidden;
