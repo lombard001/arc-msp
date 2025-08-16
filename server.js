@@ -1,88 +1,63 @@
 const express = require('express');
 const multer = require('multer');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
+const basicAuth = require('express-basic-auth');
+
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Upload klasörü
-const uploadFolder = 'public/uploads';
-if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder, { recursive: true });
-
-// Multer setup
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadFolder),
-    filename: (req, file, cb) => cb(null, file.originalname)
+    destination: function(req, file, cb){
+        cb(null, 'uploads/');
+    },
+    filename: function(req, file, cb){
+        const name = req.body.photoName || file.originalname;
+        cb(null, Date.now() + '-' + name);
+    }
 });
-const upload = multer({ storage });
+const upload = multer({ storage: storage });
 
-// Static klasör
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Basic Auth
-function checkAuth(req, res, next) {
-    const auth = req.headers.authorization;
-    if (!auth) {
-        res.setHeader('WWW-Authenticate', 'Basic realm="MSP2 Admin"');
-        return res.status(401).send('Authentication required.');
-    }
-    const [user, pass] = Buffer.from(auth.split(' ')[1], 'base64').toString().split(':');
-    if (user === 'admin' && pass === 'sehan123') return next();
-    res.setHeader('WWW-Authenticate', 'Basic realm="MSP2 Admin"');
-    return res.status(401).send('Authentication failed.');
-}
+app.use('/uploads', express.static('uploads'));
 
-// Admin sayfası
-app.get('/admin', checkAuth, (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+app.use('/admin', basicAuth({
+    users: { 'admin': 'sehan123' },
+    challenge: true
+}));
+
+app.get(['/','/home'], (req,res)=>{
+    res.sendFile(path.join(__dirname,'views','home.html'));
 });
 
-// Fotoğraf yükleme
-app.post('/upload', checkAuth, upload.array('photos', 50), (req, res) => {
-    const photoName = req.body.photoName || '';
-    req.files.forEach(file => {
-        if(photoName){
-            const ext = path.extname(file.originalname);
-            const newPath = path.join(file.destination, photoName + ext);
-            fs.renameSync(file.path, newPath);
-            file.filename = photoName + ext;
-        }
-    });
+app.get('/admin', (req,res)=>{
+    res.sendFile(path.join(__dirname,'views','admin.html'));
+});
+
+app.post('/upload', upload.single('photo'), (req,res)=>{
     res.redirect('/admin');
 });
 
-// Fotoğraf listesi JSON
-app.get('/uploads/list', checkAuth, (req, res) => {
-    let files = [];
-    try { files = fs.readdirSync(uploadFolder); } catch (err) {}
-    res.json(files);
+app.post('/delete', (req,res)=>{
+    const fileName = req.body.fileName;
+    const filePath = path.join(__dirname,'uploads',fileName);
+    if(fs.existsSync(filePath)){
+        fs.unlinkSync(filePath);
+    }
+    res.redirect('/admin');
 });
 
-// Home sayfası
-app.get(['/','/home'], (req, res) => {
-    let files = [];
-    try { files = fs.readdirSync(uploadFolder); } catch (err) {}
-    let html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>MSP2 Varlık Yönetici</title>
-      <link rel="stylesheet" href="/style.css">
-    </head>
-    <body>
-      <h1>MSP2 Varlık Yönetici</h1>
-      <div class="gallery">`;
-    files.forEach(file => {
-        const name = path.parse(file).name;
-        html += `<div class="gallery-item">
-                    <img src="/uploads/${file}">
-                    <span class="photoName">${name}</span>
-                 </div>`;
+app.get('/list-photos', (req,res)=>{
+    const files = fs.readdirSync('uploads/');
+    const data = files.map(file=>{
+        return { file: file, name: file.split('-').slice(1).join('-') };
     });
-    html += `</div></body></html>`;
-    res.send(html);
+    res.json(data);
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, ()=>{
+    console.log(`Server started on port ${PORT}`);
+});
