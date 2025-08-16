@@ -2,43 +2,38 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MSP2 Varlık Yönetici</title>
+    <title>Admin Panel</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <h1>MSP2 Varlık Yönetici</h1>
+    <h1>MSP2 Varlık Yönetici - Admin</h1>
 
-    <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="photos" id="photos" multiple>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="text" name="photoName" placeholder="Fotoğraf ismi">
+        <input type="file" name="photos" multiple>
         <button type="submit">Fotoğraf Yükle</button>
     </form>
 
     <h2>Yüklenen Fotoğraflar</h2>
-    <form id="deleteForm" action="/delete" method="POST">
-        <div id="gallery" class="gallery">
-            <!-- Fotoğraflar JS ile listelenecek -->
-        </div>
-        <button type="submit">Seçilenleri Sil</button>
-    </form>
+    <div class="gallery" id="adminGallery"></div>
 
     <script>
-        async function loadGallery() {
-            const res = await fetch('/uploads/');
-            const files = await res.json().catch(() => []);
-            const gallery = document.getElementById('gallery');
+        async function loadGallery(){
+            const res = await fetch('/uploads/list', {
+                headers:{Authorization:'Basic '+btoa('admin:sehan123')}
+            });
+            const files = await res.json();
+            const gallery = document.getElementById('adminGallery');
             gallery.innerHTML = '';
             files.forEach(file => {
+                const name = file.split('.')[0];
                 const div = document.createElement('div');
-                div.className = 'photoItem';
-                div.innerHTML = `
-                    <input type="checkbox" name="files" value="${file}">
-                    <img src="/uploads/${file}">
-                `;
+                div.className = 'gallery-item';
+                div.innerHTML = `<img src="/uploads/${file}"><span class="photoName">${name}</span>`;
                 gallery.appendChild(div);
             });
         }
-        window.onload = loadGallery;
+        loadGallery();
     </script>
 </body>
 </html>
