@@ -1,44 +1,82 @@
-body {
+html, body {
   margin: 0;
-  background: radial-gradient(circle at center, #000010 0%, #000000 100%);
-  color: #fff;
+  padding: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #000a1b 1%, #000000 70%);
   font-family: Arial, sans-serif;
-  overflow-x: hidden;
-  position: relative;
+  color: #fff;
 }
 
-.title {
+canvas {
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 30, 0.6);
+  border: 1px solid rgba(150, 150, 255, 0.4);
+  border-radius: 12px;
+  padding: 20px 30px;
+  box-shadow: 0 0 20px rgba(180, 200, 255, 0.3);
+  color: #9abfff;
   text-align: center;
-  font-size: 2.5em;
-  margin: 20px 0;
-  text-shadow: 0 0 20px #0ff, 0 0 30px #0ff33;
-  z-index: 1;
-  position: relative;
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  animation: appear 1.4s ease-out forwards;
+  width: 90%;
+  max-width: 400px;
 }
 
-.gallery {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  z-index: 1;
-  position: relative;
+.overlay h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  background: linear-gradient(to right, #9abfff, #6effb2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.photo-container {
-  margin: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.subtext {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #c0d7ff;
 }
 
-.photo-container img {
-  max-width: 200px;
-  border-radius: 5px;
-  box-shadow: 0 0 15px #0ff, 0 0 20px #0ff66;
+.bookmark-btn,
+.discord-btn {
+  display: block;
+  width: 87.5%;
+  margin-top: 15px;
+  padding: 10px 25px;
+  font-size: 15px;
+  background: linear-gradient(to right, #6e9aff, #4db89e);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.photo-container p {
-  margin: 5px 0 15px 0;
-  color: #0ff;
-  font-size: 0.9em;
+.bookmark-btn:hover,
+.discord-btn:hover {
+  background: linear-gradient(to right, #4db89e, #6e9aff);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 139, 255, 0.6);
+}
+
+@keyframes appear {
+  0% {
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
 }
