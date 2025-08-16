@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSP2 Varlık Yönetici</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h1>MSP2 Varlık Yönetici</h1>
+
+    <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="photos" id="photos" multiple>
+        <button type="submit">Fotoğraf Yükle</button>
+    </form>
+
+    <h2>Yüklenen Fotoğraflar</h2>
+    <form id="deleteForm" action="/delete" method="POST">
+        <div id="gallery" class="gallery">
+            <!-- Fotoğraflar burada listelenecek -->
+        </div>
+        <button type="submit">Seçilenleri Sil</button>
+    </form>
+
+    <script>
+        async function loadGallery() {
+            const res = await fetch('/uploads/');
+            const files = await res.json().catch(() => []);
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+            files.forEach(file => {
+                const div = document.createElement('div');
+                div.className = 'photoItem';
+                div.innerHTML = `
+                    <input type="checkbox" name="files" value="${file}">
+                    <img src="/uploads/${file}">
+                `;
+                gallery.appendChild(div);
+            });
+        }
+
+        window.onload = loadGallery;
+    </script>
+</body>
+</html>
