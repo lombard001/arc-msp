@@ -1,104 +1,71 @@
-const canvas = document.getElementById('starfield');
-const ctx = canvas.getContext('2d');
+const canvas = document.createElement('canvas');
+document.body.appendChild(canvas);
+canvas.style.position = 'fixed';
+canvas.style.top = '0';
+canvas.style.left = '0';
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+canvas.style.zIndex = '-1';
 
-function resizeCanvas() {
+const ctx = canvas.getContext('2d');
+const stars = [];
+const STAR_COUNT = 120;
+
+// Rastgele pastel renk üretmek için
+function randomStarColor() {
+  const colors = ['#0ff', '#6ef', '#8f8', '#ff8', '#f8f'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// Yıldızları oluştur
+for (let i = 0; i < STAR_COUNT; i++) {
+  stars.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 1,
+    dx: (Math.random() - 0.5) * 0.4,
+    dy: (Math.random() - 0.5) * 0.4,
+    color: randomStarColor(),
+    alpha: Math.random() * 0.5 + 0.5,
+    alphaChange: (Math.random() * 0.02 + 0.005)
+  });
+}
+
+// Animasyon fonksiyonu
+function draw() {
+  // Hafif transparan arka plan (yıldız izleri için)
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  stars.forEach(s => {
+    // Yıldızı çiz
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${parseInt(s.color.slice(1,3),16)},${parseInt(s.color.slice(3,5),16)},${parseInt(s.color.slice(5,7),16)},${s.alpha})`;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = s.color;
+    ctx.fill();
+
+    // Pozisyonu güncelle
+    s.x += s.dx;
+    s.y += s.dy;
+
+    if (s.x < 0 || s.x > canvas.width) s.dx *= -1;
+    if (s.y < 0 || s.y > canvas.height) s.dy *= -1;
+
+    // Alfa animasyonu (parlama efekti)
+    s.alpha += s.alphaChange;
+    if (s.alpha > 1 || s.alpha < 0.3) s.alphaChange *= -1;
+  });
+
+  requestAnimationFrame(draw);
+}
+
+// Başlat
+draw();
+
+// Pencere boyutu değişirse canvas güncelle
+window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-}
-
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-// Rastgele arka plan rengi
-function randomBackground() {
-  const r1 = Math.floor(Math.random()*20);
-  const g1 = Math.floor(Math.random()*20);
-  const b1 = Math.floor(Math.random()*50);
-  const r2 = Math.floor(Math.random()*5);
-  const g2 = Math.floor(Math.random()*5);
-  const b2 = Math.floor(Math.random()*5);
-  return `radial-gradient(circle at center, rgb(${r1},${g1},${b1}) 0%, rgb(${r2},${g2},${b2}) 100%)`;
-}
-
-document.body.style.background = randomBackground();
-
-const stars = [];
-const connections = {};
-const STAR_COUNT = 80;
-const MAX_DISTANCE = 120;
-
-// Rastgele yıldız rengi
-function randomStarColor() {
-  const colors = ['139,0,0', '0,0,139', '0,139,139', '139,0,139', '255,215,0'];
-  return colors[Math.floor(Math.random()*colors.length)];
-}
-
-class Star {
-  constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.vx = (Math.random() - 0.5) * 0.2;
-    this.vy = (Math.random() - 0.5) * 0.2;
-    this.radius = Math.random() * 1 + 1;
-    this.alpha = Math.random() * 0.5 + 0.5;
-    this.alphaChange = 0.003 + Math.random() * 0.00002;
-    this.color = randomStarColor();
-  }
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    if (this.x <= 0 || this.x >= canvas.width) this.vx *= -1;
-    if (this.y <= 0 || this.y >= canvas.height) this.vy *= -1;
-    this.alpha += this.alphaChange;
-    if (this.alpha >= 0.5 || this.alpha <= 0.1) this.alphaChange *= -1;
-  }
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = `rgba(${this.color}, ${this.alpha})`;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  }
-}
-
-for (let i = 0; i < STAR_COUNT; i++) {
-  stars.push(new Star());
-}
-
-function drawLines() {
-  for (let i = 0; i < stars.length; i++) {
-    for (let j = i + 1; j < stars.length; j++) {
-      const dx = stars[i].x - stars[j].x;
-      const dy = stars[i].y - stars[j].y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const key = `${i}-${j}`;
-      if (!connections[key]) connections[key] = { alpha: 0 };
-      const conn = connections[key];
-      const targetAlpha = dist < MAX_DISTANCE ? 0.4 - (dist / MAX_DISTANCE * 0.4) : 0;
-      conn.alpha += conn.alpha < targetAlpha ? 0.01 : -0.01;
-      conn.alpha = Math.max(0, Math.min(conn.alpha, targetAlpha));
-      if (conn.alpha > 0) {
-        ctx.beginPath();
-        ctx.moveTo(stars[i].x, stars[i].y);
-        ctx.lineTo(stars[j].x, stars[j].y);
-        ctx.strokeStyle = `rgba(0, 0, 139, ${conn.alpha})`;
-        ctx.lineWidth = 0.6;
-        ctx.stroke();
-      }
-    }
-  }
-}
-
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  stars.forEach(star => {
-    star.update();
-    star.draw();
-  });
-  drawLines();
-  requestAnimationFrame(animate);
-}
-
-animate();
+});
