@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const upload = multer({ dest: 'public/uploads/' });
 
@@ -33,12 +33,12 @@ app.get('/admin', checkAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'admin.html'));
 });
 
-// Fotoğraf yükleme (tekli veya çoklu)
-app.post('/upload', checkAuth, upload.array('photos', 20), (req, res) => {
+// Fotoğraf yükleme
+app.post('/upload', checkAuth, upload.array('photos', 50), (req, res) => {
     res.redirect('/admin');
 });
 
-// Fotoğraf silme (çoklu)
+// Fotoğraf silme
 app.post('/delete', checkAuth, (req, res) => {
     const files = Array.isArray(req.body.files) ? req.body.files : [req.body.files];
     files.forEach(file => {
