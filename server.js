@@ -47,6 +47,7 @@ app.get('/home', (req, res) => {
     <title>MSP2 Home</title>
     <link rel="stylesheet" href="/public/css/style.css">
     <script src="/public/js/stars.js" defer></script>
+    <script src="/public/js/lightbox.js" defer></script>
   </head>
   <body>
     <h1 class="title">MSP2 ARC</h1>
