@@ -60,6 +60,18 @@ app.get('/home', (req, res) => {
 
 // Admin Sayfası
 app.get('/admin', (req, res) => {
+  const files = fs.readdirSync(UPLOAD_DIR);
+
+  let filesHtml = '';
+  files.forEach(file => {
+    filesHtml += `
+      <div style="margin-bottom:5px;">
+        <input type="checkbox" name="filesToDelete" value="${file}" id="${file}">
+        <label for="${file}">${file}</label>
+      </div>
+    `;
+  });
+
   const html = `
   <!DOCTYPE html>
   <html lang="tr">
@@ -71,13 +83,17 @@ app.get('/admin', (req, res) => {
   </head>
   <body>
     <h1 class="title">Control Panel</h1>
+
+    <!-- Çoklu yükleme formu -->
     <form action="/admin/upload" method="post" enctype="multipart/form-data">
-      <input type="file" name="photo" required>
+      <input type="file" name="photos" multiple required>
       <button type="submit">Yükle</button>
     </form>
+
+    <!-- Toplu silme formu -->
     <form action="/admin/delete" method="post">
-      <input type="text" name="filename" placeholder="Silinecek dosya adı" required>
-      <button type="submit">Sil</button>
+      ${filesHtml}
+      <button type="submit" style="margin-top:10px;">Seçilenleri Sil</button>
     </form>
   </body>
   </html>
@@ -85,15 +101,24 @@ app.get('/admin', (req, res) => {
   res.send(html);
 });
 
-// Fotoğraf yükleme
-app.post('/admin/upload', upload.single('photo'), (req, res) => {
+// Çoklu fotoğraf yükleme
+app.post('/admin/upload', upload.array('photos', 20), (req, res) => {
   res.redirect('/admin');
 });
 
-// Fotoğraf silme
+// Toplu fotoğraf silme
 app.post('/admin/delete', express.urlencoded({ extended: true }), (req, res) => {
-  const filePath = path.join(UPLOAD_DIR, req.body.filename);
-  if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  let files = req.body.filesToDelete;
+
+  // Tek dosya seçilmişse string, çoksa array olur
+  if (!files) return res.redirect('/admin');
+  if (!Array.isArray(files)) files = [files];
+
+  files.forEach(file => {
+    const filePath = path.join(UPLOAD_DIR, file);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  });
+
   res.redirect('/admin');
 });
 
